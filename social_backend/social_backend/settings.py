@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
     'rest_framework.authtoken',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_backend.middleware.DisableCSRF',
+    # 'django.middleware.DisableCSRF'
     # 'django.middleware.csrf.CsrfViewMiddleware',
 
 ]
@@ -142,10 +145,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
 
-# # Define a custom middleware to disable CSRF for APIs
-# class DisableCSRF(object):
-#     def process_request(self, request):
-#         setattr(request, '_dont_enforce_csrf_checks', True)
-
-# # Add custom middleware to MIDDLEWARE
-# MIDDLEWARE.append('path.to.DisableCSRF')
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
