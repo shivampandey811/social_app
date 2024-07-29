@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
     'rest_framework.authtoken',
-    'channels',
+    'channels',    
 ]
 
 MIDDLEWARE = [
@@ -54,6 +54,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_backend.middleware.DisableCSRF',
+
+
     # 'django.middleware.DisableCSRF'
     # 'django.middleware.csrf.CsrfViewMiddleware',
 
