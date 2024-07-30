@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'channels',    
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -49,11 +50,12 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    # 'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_backend.middleware.DisableCSRF',
+    'social_backend.middleware.DisableCSRF',    
+
 
 
     # 'django.middleware.DisableCSRF'
@@ -61,16 +63,12 @@ MIDDLEWARE = [
 
 ]
 
-CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_HEADERS = [
-    'content-type',
-    'authorization',
-    'x-csrftoken'
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
 ]
 
-CSRF_COOKIE_NAME = 'csrftoken'
-CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'social_backend.urls'
 

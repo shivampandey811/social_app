@@ -6,4 +6,5 @@ urlpatterns = [
     path('received_interests/', ReceivedInterestRequestsView.as_view(), name='received_interests'),
     path('interest/action/', AcceptRejectInterestView.as_view(), name='accept_reject_interest'),
     path('chat_rooms/', ChatRoomView.as_view(), name='chat_rooms'),
+    # path('interests/<int:pk>/accept/', AcceptInterestView.as_view(), name='accept-interest'),
 ]

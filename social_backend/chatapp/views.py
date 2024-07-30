@@ -1,7 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import  InterestRequestSerializer
+from .serializers import  *
 from .models import  *
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -64,3 +64,21 @@ class ChatRoomView(APIView):
     def get(self, request, *args, **kwargs):
         chat_rooms = request.user.chat_rooms.all()
         return Response({'chat_rooms': [room.name for room in chat_rooms]})
+
+
+from rest_framework import generics, permissions
+
+class InterestRequestCreateView(generics.CreateAPIView):
+    queryset = InterestRequest.objects.all()
+    serializer_class = InterestSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(sender=self.request.user)
+
+class ReceivedInterestRequestsView(generics.ListAPIView):
+    serializer_class = InterestSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return InterestRequest.objects.filter(recipient=self.request.user)

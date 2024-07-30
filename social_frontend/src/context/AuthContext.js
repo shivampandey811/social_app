@@ -19,17 +19,32 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (username, password) => {
-    const response = await api.post('/users/login/', { username, password });
-    setUser(response.data.user);
+    try {
+      const response = await api.post('/users/login/', { username, password });
+      setUser(response.data.user);
+      console.log(response.data.sessionid)
+      localStorage.setItem('sessionid', response.data.sessionid); // Store session ID in local storage
+    } catch (error) {
+      console.error('Login error: ', error);
+    }
   };
 
   const logout = async () => {
-    await api.post('/users/logout/');
-    setUser(null);
+    try {
+      await api.post('/users/logout/');
+      setUser(null);
+      localStorage.removeItem('sessionid'); // Remove session ID from local storage on logout
+    } catch (error) {
+      console.error('Logout error: ', error);
+    }
   };
 
   const register = async (username, password, email) => {
-    await api.post('/users/register/', { username, password, email });
+    try {
+      await api.post('/users/register/', { username, password, email });
+    } catch (error) {
+      console.error('Registration error: ', error);
+    }
   };
 
   return (

@@ -6,30 +6,55 @@ import { AuthContext } from '../../context/AuthContext';
 const Users = () => {
   const { user } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
-  const [requests, setRequests] = useState([]);
+  const [receivedRequests, setReceivedRequests] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await api.get('/users/');
-      setUsers(response.data);
+      try {
+        const response = await api.get('/users/users/');
+        setUsers(response.data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
     };
 
-    const fetchRequests = async () => {
-      const response = await api.get('/interests/');
-      setRequests(response.data);
+    const fetchReceivedRequests = async () => {
+      try {
+        const response = await api.get('/chatapp/received_interests/');
+        setReceivedRequests(response.data);
+      } catch (error) {
+        console.error('Error fetching received interests:', error);
+      }
     };
 
     fetchUsers();
-    fetchRequests();
+    fetchReceivedRequests();
   }, []);
 
   const sendRequest = async (recipientId) => {
-    await api.post('/interests/', { recipient: recipientId });
+    try {
+      await api.post('/chatapp/interest/', { recipient: recipientId });
+    } catch (error) {
+      console.error('Error sending request:', error);
+    }
   };
 
   const acceptRequest = async (requestId) => {
-    await api.post(`/interests/${requestId}/accept/`);
+    try {
+      await api.post(`/chatapp/interest/action/`, { request_id: requestId, action: 'accept' });
+    } catch (error) {
+      console.error('Error accepting request:', error);
+    }
+  };
+
+  const isRequestReceived = (senderId) => {
+    return receivedRequests.some((request) => request.sender.id === senderId && !request.accepted);
+  };
+
+  const getRequestId = (senderId) => {
+    const request = receivedRequests.find((request) => request.sender.id === senderId && !request.accepted);
+    return request ? request.id : null;
   };
 
   return (
@@ -39,12 +64,12 @@ const Users = () => {
         {users.map((u) => (
           <li key={u.id}>
             {u.username}
-            {requests.find((r) => r.sender === u.id && r.recipient === user.id) ? (
-              <button onClick={() => acceptRequest(u.id)}>Accept Request</button>
+            {isRequestReceived(u.id) ? (
+              <button onClick={() => acceptRequest(getRequestId(u.id))}>Accept Request</button>
             ) : (
               <button onClick={() => sendRequest(u.id)}>Send Request</button>
             )}
-            <button onClick={() => navigate(`/chat/chat_${user.id}_${u.id}`)}>Chat</button>
+            <button onClick={() => navigate(`/chatapp/chat/chat_${user.id}_${u.id}`)}>Chat</button>
           </li>
         ))}
       </ul>

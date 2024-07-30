@@ -25,9 +25,18 @@ class LoginView(generics.GenericAPIView):
             login(request, user)
             users = User.objects.all()
             serializer = UserSerializer(users, many=True)
+            # ({'user': {'id': user.id, 'username': user.username}, 'sessionid': request.session.session_key})
             return Response({
                 "message": "Logged in successfully",
-                "users": serializer.data
+                "users": serializer.data,
+                'sessionid': request.session.session_key
             }, status=status.HTTP_200_OK)
         else:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+
+from rest_framework import generics, permissions
+
+class UserListView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
